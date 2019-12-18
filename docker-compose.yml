@@ -19,6 +19,8 @@ services:
   redis-1:
     init: true
     image: redis:5.0-alpine
+    ports:
+      - "6381:6379"
     networks:
       - rump-network
     volumes: 
@@ -26,6 +28,8 @@ services:
   redis-2:
     init: true
     image: redis:5.0-alpine
+    ports:
+      - "6382:6379"
     networks:
       - rump-network
     volumes: 
