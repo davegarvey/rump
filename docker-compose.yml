@@ -7,14 +7,35 @@ services:
       context: ./
       dockerfile: infra/Dockerfile.dev
     volumes:
-      - ./:/app
+      - ./:/app 
       # cache dependencies
       - deps:/go/pkg/mod
-  redis:
+    networks:
+      - rump-network
+    command: /app/rump--linux-amd64 -from redis://redis-1:6379 -to redis://redis-2:6379 -pattern *
+    depends_on: 
+      - redis-1
+      - redis-2
+  redis-1:
     init: true
     image: redis:5.0-alpine
-    ports:
-      - "6379:6379"
+    networks:
+      - rump-network
+    volumes: 
+      - redis-1-data:/data
+  redis-2:
+    init: true
+    image: redis:5.0-alpine
+    networks:
+      - rump-network
+    volumes: 
+      - redis-2-data:/data
+
 volumes:
+  redis-1-data:
+  redis-2-data:
   deps:
     driver: local
+
+networks:
+  rump-network:
